@@ -7,6 +7,8 @@ import { StarIcon } from "@heroicons/react/24/solid"
 import { useParams, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import ReactStars from 'react-stars'
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const ProductDetailedPage = () => {
   const [loading, setLoading] = useState(false)
@@ -14,6 +16,32 @@ const ProductDetailedPage = () => {
   const [isOpen, setisOpen] = useState(true)
   const router = useRouter()
   const { id } = useParams()
+
+
+  const handleClick = () => {
+    const products: ProductType[] = JSON.parse((localStorage.getItem('carts') as string)) || [];
+
+    const isExistProduct = products.find(c => c.id === product?.id);
+    if (isExistProduct) {
+      const updatedData = products.map(c => {
+        if (c.id === product?.id) {
+          return {
+            ...c, quantity: c.quantity + 1
+          }
+        }
+        return c;
+      });
+      localStorage.setItem("carts", JSON.stringify(updatedData))
+
+
+    } else {
+      const data = [...products, { ...product, quantity: 1 }]
+      localStorage.setItem("carts", JSON.stringify(data))
+
+    }
+    toast("Product added to your backet")
+
+  }
   useEffect(() => {
     async function getData() {
       setLoading(true)
@@ -65,7 +93,7 @@ const ProductDetailedPage = () => {
                           <StarIconOutline key={i} className='h-4 w-4 text-yellow-500' />
                         ))} */}
 
-                        <ReactStars value={product.rating.rate} edit={false}/>
+                        <ReactStars value={product.rating.rate} edit={false} />
                       </div>
                     )}
                     {product?.rating?.count && (
@@ -79,7 +107,7 @@ const ProductDetailedPage = () => {
                     {product?.description}
                   </p>
                   <div className="space-y-3 text-sm">
-                    <button className='button w-full bg-blue-600 text-white border-transparent hover:border-blue-600 hover:bg-transparent hover:text-black' >Add to bab</button>
+                    <button onClick={handleClick} className='button w-full bg-blue-600 text-white border-transparent hover:border-blue-600 hover:bg-transparent hover:text-black' >Add to backet</button>
                     <button onClick={() => window.location.reload()} className='button w-full bg-blue-600 text-white border-transparent hover:border-blue-600 hover:bg-transparent hover:text-black' >View full details</button>
                   </div>
                 </div>

@@ -1,7 +1,7 @@
 "use client"
 import { FC } from "react"
 import { ProductType } from "../interfaces"
-import Image from "next/image"
+import Image from "next/image"  
 import Link from "next/link"
 import CustomImage from "./image"
 
